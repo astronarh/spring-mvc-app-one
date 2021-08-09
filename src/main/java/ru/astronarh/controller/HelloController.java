@@ -1,9 +1,9 @@
-package ru.astronarh;
+package ru.astronarh.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
-@Controller("spring_mvc_app_one_war_exploded/")
+@Controller
 public class HelloController {
     @GetMapping("/hello-world")
     public String sayHello() {
