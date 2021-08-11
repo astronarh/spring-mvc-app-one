@@ -1,12 +1,18 @@
 package ru.astronarh.model;
 
+import java.util.UUID;
+
 public class Person {
-    private String id;
+    private String id = UUID.randomUUID().toString();
     private String name;
 
     public Person(String id, String name) {
         this.id = id;
         this.name = name;
+    }
+
+    public Person() {
+
     }
 
     public String getId() {

@@ -9,7 +9,7 @@ import java.util.UUID;
 
 @Component
 public class PersonDao {
-    private List<Person> people = new ArrayList<>();
+    private static List<Person> people = new ArrayList<>();
 
     {
         people.add(new Person(UUID.randomUUID().toString(), "One"));
@@ -23,5 +23,19 @@ public class PersonDao {
 
     public Person show(String personId) {
         return people.stream().filter(p ->p.getId().equals(personId)).findFirst().orElse(null);
+    }
+
+    public void add(Person person) {
+        people.add(person);
+    }
+
+    public void delete(String personId) {
+        people.removeIf(p -> p.getId().equals(personId));
+    }
+
+    public void update(String personId, Person person) {
+        Person personToBeUpdated = show(personId);
+
+        personToBeUpdated.setName(person.getName());
     }
 }
