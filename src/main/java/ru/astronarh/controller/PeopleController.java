@@ -1,14 +1,13 @@
 package ru.astronarh.controller;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import ru.astronarh.dao.PersonDao;
 import ru.astronarh.model.Person;
 import ru.astronarh.service.PersonService;
-
-import java.util.List;
 
 @Controller
 @RequestMapping("/people")
@@ -36,7 +35,11 @@ public class PeopleController {
     }
 
     @PostMapping
-    public String create(@ModelAttribute Person person) {
+    public String create(@ModelAttribute @Valid Person person, BindingResult bindingResult) {
+        if(bindingResult.hasErrors()) {
+            return "people/new";
+        }
+
         personService.add(person);
 
         return "redirect:/people";
@@ -50,7 +53,11 @@ public class PeopleController {
     }
 
     @PatchMapping("/{personId}")
-    public String update(@ModelAttribute Person person, @PathVariable String personId) {
+    public String update(@ModelAttribute @Valid Person person, BindingResult bindingResult, @PathVariable String personId) {
+        if(bindingResult.hasErrors()) {
+            return "people/edit";
+        }
+
         personService.update(personId, person);
 
         return "redirect:/people";

@@ -17,5 +17,3 @@ j
 :src/main/java/ru/astronarh/controller/FirstController.java,7/3/735516ed3e03a8d00b8c4ab39f7a568ba182bc4b
 o
 ?src/main/java/ru/astronarh/controller/CalculatorController.java,f/a/faf598ede9c028f3c4d49edaf5c876384f737876
-7
-pom.xml,4/4/442292b8a7efeabbe4cc176709b833b1792140ec

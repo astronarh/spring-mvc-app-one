@@ -12,9 +12,9 @@ public class PersonDao {
     private static List<Person> people = new ArrayList<>();
 
     {
-        people.add(new Person(UUID.randomUUID().toString(), "One"));
-        people.add(new Person(UUID.randomUUID().toString(), "Two"));
-        people.add(new Person(UUID.randomUUID().toString(), "Tree"));
+        people.add(new Person(UUID.randomUUID().toString(), "One", 10, "10@mail.mail"));
+        people.add(new Person(UUID.randomUUID().toString(), "Two", 11, "11@mail.mail"));
+        people.add(new Person(UUID.randomUUID().toString(), "Tree", 12, "12@mail.mail"));
     }
 
     public List<Person> index() {
@@ -37,5 +37,7 @@ public class PersonDao {
         Person personToBeUpdated = show(personId);
 
         personToBeUpdated.setName(person.getName());
+        personToBeUpdated.setAge(person.getAge());
+        personToBeUpdated.setEmail(person.getEmail());
     }
 }
