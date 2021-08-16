@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.*;
 import ru.astronarh.model.Person;
 import ru.astronarh.service.PersonService;
 
+import java.sql.SQLException;
+
 @Controller
 @RequestMapping("/people")
 public class PeopleController {
@@ -16,13 +18,13 @@ public class PeopleController {
     private PersonService personService;
 
     @GetMapping
-    public String index(Model model) {
+    public String index(Model model) throws SQLException {
         model.addAttribute("people", personService.index());
         return "people/index";
     }
 
     @GetMapping("/{personId}")
-    public String show(@PathVariable String personId, Model model) {
+    public String show(@PathVariable String personId, Model model) throws SQLException {
         Person person = personService.show(personId);
 
         model.addAttribute("person", person);
@@ -35,7 +37,7 @@ public class PeopleController {
     }
 
     @PostMapping
-    public String create(@ModelAttribute @Valid Person person, BindingResult bindingResult) {
+    public String create(@ModelAttribute @Valid Person person, BindingResult bindingResult) throws SQLException {
         if(bindingResult.hasErrors()) {
             return "people/new";
         }
@@ -46,14 +48,14 @@ public class PeopleController {
     }
 
     @GetMapping("/{personId}/edit")
-    public String edit(@PathVariable String personId, Model model) {
+    public String edit(@PathVariable String personId, Model model) throws SQLException {
         model.addAttribute("person", personService.show(personId));
 
         return "people/edit";
     }
 
     @PostMapping("/{personId}")
-    public String update(@ModelAttribute @Valid Person person, BindingResult bindingResult, @PathVariable String personId) {
+    public String update(@ModelAttribute @Valid Person person, BindingResult bindingResult, @PathVariable String personId) throws SQLException {
         if(bindingResult.hasErrors()) {
             return "people/edit";
         }
@@ -64,7 +66,7 @@ public class PeopleController {
     }
 
     @PostMapping("/{personId}/delete")
-    public String delete(@PathVariable String personId) {
+    public String delete(@PathVariable String personId) throws SQLException {
         personService.delete(personId);
 
         return "redirect:/people";
