@@ -56,16 +56,44 @@ public class PersonDao {
     }
 
     public Person show(String personId) {
-//        return people.stream().filter(p ->p.getId().equals(personId)).findFirst().orElse(null);
-        return null;
+        Person person = null;
+        
+        try {
+            String SQL = "SELECT * FROM person WHERE id=?";
+
+            PreparedStatement preparedStatement = connection.prepareStatement(SQL);
+
+            preparedStatement.setString(1, personId);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+            
+            while (resultSet.next()) {
+                person = new Person();
+
+                person.setId(resultSet.getString("id"));
+                person.setName(resultSet.getString("name"));
+                person.setEmail(resultSet.getString("email"));
+                person.setAge(resultSet.getInt("age"));
+
+                return person;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return person;
     }
 
     public void add(Person person) {
-//        people.add(person);
         try {
-            Statement statement = connection.createStatement();
-            String SQL = "INSERT INTO person VALUES('" + UUID.randomUUID().toString() + "','" + person.getName() + "'," + person.getAge() + ",'" + person.getEmail() + "')";
-            statement.executeUpdate(SQL);
+            String SQL = "INSERT INTO person VALUES(?,?,?,?)";
+            PreparedStatement preparedStatement = connection.prepareStatement(SQL);
+
+            preparedStatement.setString(1, UUID.randomUUID().toString());
+            preparedStatement.setString(2, person.getName());
+            preparedStatement.setInt(3, person.getAge());
+            preparedStatement.setString(4, person.getEmail());
+
+            preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -73,14 +101,30 @@ public class PersonDao {
     }
 
     public void delete(String personId) {
-//        people.removeIf(p -> p.getId().equals(personId));
+        String SQL = "DELETE FROM person WHERE id=?";
+
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(SQL);
+            preparedStatement.setString(1, personId);
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     public void update(String personId, Person person) {
-//        Person personToBeUpdated = show(personId);
-//
-//        personToBeUpdated.setName(person.getName());
-//        personToBeUpdated.setAge(person.getAge());
-//        personToBeUpdated.setEmail(person.getEmail());
+        String SQL = "UPDATE person SET name=?, age=?, email=? WHERE id=?";
+
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(SQL);
+            preparedStatement.setString(1, person.getName());
+            preparedStatement.setInt(2, person.getAge());
+            preparedStatement.setString(3, person.getEmail());
+            preparedStatement.setString(4, personId);
+
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

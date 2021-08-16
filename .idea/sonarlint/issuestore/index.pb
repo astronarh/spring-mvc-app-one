@@ -1,8 +1,6 @@
 
 ^
 .src/main/webapp/WEB-INF/views/hello_world.html,0/8/08e27856f468281d1535d522c7eea892fa5f1526
-c
-3src/main/java/ru/astronarh/config/SpringConfig.java,1/7/17cb44df65038b2687c631c4b853ab7d8d8eb2a3
 `
 0src/main/webapp/WEB-INF/views/first/goodbye.html,d/5/d51ab06dbc702eb933e6f2c243d26c647892e7d8
 c

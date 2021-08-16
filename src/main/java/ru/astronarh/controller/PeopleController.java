@@ -52,7 +52,7 @@ public class PeopleController {
         return "people/edit";
     }
 
-    @PatchMapping("/{personId}")
+    @PostMapping("/{personId}")
     public String update(@ModelAttribute @Valid Person person, BindingResult bindingResult, @PathVariable String personId) {
         if(bindingResult.hasErrors()) {
             return "people/edit";
@@ -63,7 +63,7 @@ public class PeopleController {
         return "redirect:/people";
     }
 
-    @DeleteMapping("/{personId}")
+    @PostMapping("/{personId}/delete")
     public String delete(@PathVariable String personId) {
         personService.delete(personId);
 
