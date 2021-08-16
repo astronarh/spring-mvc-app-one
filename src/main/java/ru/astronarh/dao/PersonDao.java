@@ -1,12 +1,11 @@
 package ru.astronarh.dao;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
-import ru.astronarh.config.DbConnection;
 import ru.astronarh.model.Person;
 
-import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -18,77 +17,32 @@ public class PersonDao {
     private static final String DELETE_BY_ID = "DELETE FROM person WHERE id=?";
     private static final String UPDATE_BY_ID = "UPDATE person SET name=?, age=?, email=? WHERE id=?";
 
+    private final JdbcTemplate jdbcTemplate;
+
+    private static final BeanPropertyRowMapper<Person> PERSON_MAPPER = new BeanPropertyRowMapper<>(Person.class);
+
     @Autowired
-    private DbConnection dbConnection;
-
-    public List<Person> index() throws SQLException {
-        List<Person> people = new ArrayList<>();
-        Statement statement = dbConnection.get().createStatement();
-
-        ResultSet resultSet = statement.executeQuery(SELECT_ALL);
-
-        while (resultSet.next()) {
-            Person person = new Person();
-
-            person.setId(resultSet.getString("id"));
-            person.setName(resultSet.getString("name"));
-            person.setEmail(resultSet.getString("email"));
-            person.setAge(resultSet.getInt("age"));
-
-            people.add(person);
-        }
-        return people;
+    public PersonDao(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 
-    public Person show(String personId) throws SQLException {
-        Person person = null;
-
-        PreparedStatement preparedStatement = dbConnection.get().prepareStatement(SELECT_BY_ID);
-
-        preparedStatement.setString(1, personId);
-
-        ResultSet resultSet = preparedStatement.executeQuery();
-
-        while (resultSet.next()) {
-            person = new Person();
-
-            person.setId(resultSet.getString("id"));
-            person.setName(resultSet.getString("name"));
-            person.setEmail(resultSet.getString("email"));
-            person.setAge(resultSet.getInt("age"));
-
-            return person;
-        }
-
-        return person;
+    public List<Person> index() {
+        return jdbcTemplate.query(SELECT_ALL, PERSON_MAPPER);
     }
 
-    public void add(Person person) throws SQLException {
-        PreparedStatement preparedStatement = dbConnection.get().prepareStatement(INSERT_INTO);
-
-        preparedStatement.setString(1, UUID.randomUUID().toString());
-        preparedStatement.setString(2, person.getName());
-        preparedStatement.setInt(3, person.getAge());
-        preparedStatement.setString(4, person.getEmail());
-
-        preparedStatement.executeUpdate();
+    public Person show(String personId) {
+        return jdbcTemplate.query(SELECT_BY_ID, new Object[]{personId}, PERSON_MAPPER).stream().findAny().orElse(null);
     }
 
-    public void delete(String personId) throws SQLException {
-        PreparedStatement preparedStatement = dbConnection.get().prepareStatement(DELETE_BY_ID);
-
-        preparedStatement.setString(1, personId);
-        preparedStatement.executeUpdate();
+    public void add(Person person) {
+        jdbcTemplate.update(INSERT_INTO, UUID.randomUUID().toString(), person.getName(), person.getAge(), person.getEmail());
     }
 
-    public void update(String personId, Person person) throws SQLException {
-        PreparedStatement preparedStatement = dbConnection.get().prepareStatement(UPDATE_BY_ID);
+    public void update(String personId, Person person) {
+        jdbcTemplate.update(UPDATE_BY_ID, person.getName(), person.getAge(), person.getEmail(), personId);
+    }
 
-        preparedStatement.setString(1, person.getName());
-        preparedStatement.setInt(2, person.getAge());
-        preparedStatement.setString(3, person.getEmail());
-        preparedStatement.setString(4, personId);
-
-        preparedStatement.executeUpdate();
+    public void delete(String personId) {
+        jdbcTemplate.update(DELETE_BY_ID, personId);
     }
 }
